@@ -21,8 +21,6 @@ Cinco agentes de IA especializados colaboram para decidir sobre um pedido de cr�
 
 O objetivo é didático: mostrar como os componentes do **Microsoft Agent Framework** se encaixam — agentes, tool calling, orquestração e injeção de dependência — num caso de uso reconhecível, sem a complexidade de um sistema de produção.
 
-Além do código, este repositório documenta **o que não funciona** no ecossistema .NET de IA hoje. Boa parte do tempo de construção foi gasta descobrindo incompatibilidades que as mensagens de erro não revelam. Essas descobertas estão em [Armadilhas do Gemini](#armadilhas-do-gemini-em-net) e [Caminhos sem saída](#caminhos-sem-saída).
-
 > [!NOTE]
 > Os dados de crédito e compliance são simulados. Este projeto é uma referência de arquitetura, não um sistema de decisão de crédito.
 
@@ -378,19 +376,9 @@ O `GeminiDotnet.Extensions.AI` é construído sobre as abstrações do `Microsof
 
 ---
 
-## Diferenças em relação ao artigo de referência
+## Origem do projeto
 
-Este projeto partiu do artigo [Construindo Sistemas Multiagentes com o MAF](https://macoratti.net/26/08/net_creatingmultiagentswithmaf1.htm), de José Carlos Macoratti. O código publicado lá não compila. As correções:
-
-**1. `OpenAIChatClient` não existe.** O construtor `new OpenAIChatClient(model, apiKey)` foi removido nas versões atuais do `Microsoft.Extensions.AI.OpenAI`.
-
-**2. Tools precisam virar `AIFunction`.** O parâmetro `tools:` do `ChatClientAgent` espera `IList<AITool>`, não a sua classe — `tools: [_tool]` não compila. Os métodos também precisam de `[Description]`.
-
-**3. `usings` ausentes.** Faltavam `Microsoft.Extensions.Hosting` (para `Host`), `Microsoft.Extensions.AI` e `Microsoft.Agents.AI`. Este último é a causa do erro `CS0246: ChatClientAgent could not be found`.
-
-**4. `apiKey` nunca era declarada** no `Program.cs`.
-
-**5. O `WorkflowBuilder` estava incompleto.** Além dos nomes de método não corresponderem à API real — o correto é `AddFanOutEdge` / `AddFanInEdge` / `WithOutputFrom` — o grafo tinha um buraco: nenhuma aresta chegava ao `reviewer`. E `workflow.RunAsync(prompt)` não devolve `string`.
+Este projeto partiu do artigo [Construindo Sistemas Multiagentes com o MAF](https://macoratti.net/26/08/net_creatingmultiagentswithmaf1.htm), de José Carlos Macoratti.
 
 ---
 
@@ -492,4 +480,3 @@ Exige executors customizados para o início e a agregação. Há issues abertas 
 - [Microsoft Agent Framework](https://learn.microsoft.com/agent-framework/) — documentação oficial
 - [Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai) — a camada de abstração
 - [Gemini API](https://ai.google.dev/gemini-api/docs) — referência da API e limites de cota
-- [Macoratti — Construindo Sistemas Multiagentes com o MAF](https://macoratti.net/26/08/net_creatingmultiagentswithmaf1.htm) — artigo que originou o projeto
